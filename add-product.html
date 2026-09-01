@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EcoStock | Add Product</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        /* ==============================
+           ADD PRODUCT PAGE
+           ============================== */
+
+        .form-page {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 29px;
+            margin-bottom: 5px;
+        }
+
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+
+        /* FORM CARD */
+
+        .form-card {
+
+            background: white;
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            box-shadow: var(--shadow);
+
+            padding: 30px;
+
+        }
+
+
+        .form-section {
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .form-section-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .form-section-icon {
+
+            width: 36px;
+
+            height: 36px;
+
+            background: var(--primary-light);
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .form-section-title h2 {
+
+            font-family: 'Outfit', sans-serif;
+
+            font-size: 17px;
+
+        }
+
+
+        .form-section-title p {
+
+            color: var(--text-light);
+
+            font-size: 10px;
+
+            margin-top: 2px;
+
+        }
+
+
+        /* FORM GRID */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .form-group.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .form-group label {
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            color: var(--text);
+
+        }
+
+
+        .required {
+
+            color: var(--red);
+
+        }
+
+
+        .form-group input,
+
+        .form-group select,
+
+        .form-group textarea {
+
+            width: 100%;
+
+            border: 1px solid var(--border);
+
+            background: #f9fcfa;
+
+            border-radius: 10px;
+
+            padding: 12px 13px;
+
+            outline: none;
+
+            font-size: 12px;
+
+            color: var(--text);
+
+            transition: 0.2s;
+
+        }
+
+
+        .form-group textarea {
+
+            resize: vertical;
+
+            min-height: 100px;
+
+        }
+
+
+        .form-group input:focus,
+
+        .form-group select:focus,
+
+        .form-group textarea:focus {
+
+            border-color: var(--green);
+
+            background: white;
+
+            box-shadow:
+                0 0 0 3px rgba(22, 163, 106, 0.08);
+
+        }
+
+
+        .form-help {
+
+            font-size: 9px;
+
+            color: var(--text-light);
+
+        }
+
+
+        /* PRODUCT PREVIEW */
+
+        .product-preview {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8faf2,
+                    #f5fcf8
+                );
+
+            border: 1px solid #d7f1e5;
+
+            border-radius: 14px;
+
+            padding: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .preview-icon {
+
+            width: 55px;
+
+            height: 55px;
+
+            background: white;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 27px;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.05);
+
+        }
+
+
+        .preview-info strong {
+
+            display: block;
+
+            font-size: 13px;
+
+        }
+
+
+        .preview-info span {
+
+            color: var(--text-light);
+
+            font-size: 10px;
+
+        }
+
+
+        /* BUTTONS */
+
+        .form-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding-top: 10px;
+
+            border-top: 1px solid var(--border);
+
+        }
+
+
+        .secondary-button {
+
+            padding: 12px 20px;
+
+            border: 1px solid var(--border);
+
+            background: white;
+
+            color: var(--text);
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        .secondary-button:hover {
+
+            background: #f5f9f7;
+
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 750px) {
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-group.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .form-card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-actions {
+
+                flex-direction: column-reverse;
+
+            }
+
+
+            .form-actions button,
+
+            .form-actions a {
+
+                width: 100%;
+
+                text-align: center;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================
+         SIDEBAR
+         ========================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h2>EcoStock</h2>
+
+                <span>
+                    Smart Inventory
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+
+            <p class="menu-title">
+                MAIN MENU
+            </p>
+
+
+            <a href="index.html"
+               class="nav-item">
+
+                <span>📊</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="inventory.html"
+               class="nav-item">
+
+                <span>📦</span>
+
+                Inventory
+
+            </a>
+
+
+            <a href="add-product.html"
+               class="nav-item active">
+
+                <span>➕</span>
+
+                Add Product
+
+            </a>
+
+
+            <a href="billing.html"
+               class="nav-item">
+
+                <span>🧾</span>
+
+                Billing
+
+            </a>
+
+
+            <a href="alerts.html"
+               class="nav-item">
+
+                <span>🔔</span>
+
+                Expiry Alerts
+
+                <span class="alert-count">
+                    8
+                </span>
+
+            </a>
+
+
+            <a href="analytics.html"
+               class="nav-item">
+
+                <span>📈</span>
+
+                Analytics
+
+            </a>
+
+
+            <p class="menu-title">
+                SYSTEM
+            </p>
+
+
+            <a href="settings.html"
+               class="nav-item">
+
+                <span>⚙️</span>
+
+                Settings
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="eco-card">
+
+                <div class="eco-icon">
+                    🌎
+                </div>
+
+                <h4>
+                    Save the Planet
+                </h4>
+
+                <p>
+                    Every product saved from waste
+                    makes a difference.
+                </p>
+
+                <div class="eco-progress">
+
+                    <div></div>
+
+                </div>
+
+                <small>
+                    78% waste reduction goal
+                </small>
+
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- ==========================
+         MAIN CONTENT
+         ========================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+
+            <div class="mobile-logo">
+                🌿 EcoStock
+            </div>
+
+
+            <div class="search-box">
+
+                <span>🔍</span>
+
+                <input
+                    type="text"
+                    placeholder="Search inventory..."
+                >
+
+            </div>
+
+
+            <div class="top-actions">
+
+
+                <button class="icon-button">
+
+                    🔔
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="avatar">
+                        M
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Mugesh
+                        </strong>
+
+                        <small>
+                            Administrator
+                        </small>
+
+                    </div>
+
+                    <span>⌄</span>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- ==========================
+             FORM PAGE
+             ========================== -->
+
+        <section class="dashboard form-page">
+
+
+            <!-- HEADER -->
+
+            <div class="page-header">
+
+                <p class="greeting">
+                    INVENTORY MANAGEMENT
+                </p>
+
+                <h1>
+                    Add New Product 📦
+                </h1>
+
+                <p>
+                    Add a product to your inventory
+                    and track its expiry date.
+                </p>
+
+            </div>
+
+
+
+            <!-- FORM -->
+
+            <form
+                class="form-card"
+                id="productForm"
+            >
+
+
+                <!-- PRODUCT INFORMATION -->
+
+                <div class="form-section">
+
+
+                    <div class="form-section-title">
+
+                        <div class="form-section-icon">
+                            📦
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Product Information
+                            </h2>
+
+                            <p>
+                                Basic details about the product
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- NAME -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Product Name
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productName"
+                                placeholder="Example: Milk"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Category
+                                <span class="required">*</span>
+                            </label>
+
+                            <select
+                                id="productCategory"
+                                required
+                            >
+
+                                <option value="">
+                                    Select category
+                                </option>
+
+                                <option value="food">
+                                    🍎 Food & Beverages
+                                </option>
+
+                                <option value="medicine">
+                                    💊 Medicine
+                                </option>
+
+                                <option value="personal">
+                                    🧴 Personal Care
+                                </option>
+
+                                <option value="household">
+                                    🏠 Household
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Quantity
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="productQuantity"
+                                min="1"
+                                placeholder="Example: 10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- UNIT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Unit
+                                <span class="required">*</span>
+                            </label>
+
+                            <select
+                                id="productUnit"
+                                required
+                            >
+
+                                <option value="">
+                                    Select unit
+                                </option>
+
+                                <option>
+                                    Pieces
+                                </option>
+
+                                <option>
+                                    Packs
+                                </option>
+
+                                <option>
+                                    Bottles
+                                </option>
+
+                                <option>
+                                    Boxes
+                                </option>
+
+                                <option>
+                                    Kg
+                                </option>
+
+                                <option>
+                                    Litres
+                                </option>
+
+                                <option>
+                                    Strips
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- UNIT PRICE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Unit Price (₹)
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="productPrice"
+                                step="0.01"
+                                min="0"
+                                placeholder="Example: 45.00"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DATE INFORMATION -->
+
+                <div class="form-section">
+
+
+                    <div class="form-section-title">
+
+                        <div class="form-section-icon">
+                            📅
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Expiry Information
+                            </h2>
+
+                            <p>
+                                Track when your product expires
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- PURCHASE DATE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Purchase Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="purchaseDate"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- EXPIRY DATE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Expiry Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="expiryDate"
+                                required
+                            >
+
+                            <span class="form-help">
+                                EcoStock will automatically
+                                calculate the expiry status.
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- NOTES -->
+
+                <div class="form-section">
+
+
+                    <div class="form-section-title">
+
+                        <div class="form-section-icon">
+                            📝
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Additional Information
+                            </h2>
+
+                            <p>
+                                Optional product information
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group full">
+
+                            <label>
+                                Notes
+                            </label>
+
+                            <textarea
+                                id="productNotes"
+                                placeholder="Add any additional notes about this product..."
+                            ></textarea>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PREVIEW -->
+
+                <div class="form-section">
+
+
+                    <div class="product-preview">
+
+
+                        <div class="preview-icon"
+                             id="previewIcon">
+
+                            📦
+
+                        </div>
+
+
+                        <div class="preview-info">
+
+                            <strong id="previewName">
+                                New Product
+                            </strong>
+
+                            <span id="previewCategory">
+                                Select a category
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+
+                    <a
+                        href="inventory.html"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        💾 Save Product
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <script src="js/app.js"></script>
+
+    <script src="js/add-product.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EcoStock | Expiry Alerts</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        /* ==============================
+           ALERT PAGE
+           ============================== */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 29px;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+
+        /* ALERT SUMMARY */
+
+        .alert-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+
+        .alert-summary-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+
+        .summary-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+
+        .summary-icon.red {
+            background: var(--red-light);
+        }
+
+
+        .summary-icon.orange {
+            background: var(--orange-light);
+        }
+
+
+        .summary-icon.green {
+            background: var(--primary-light);
+        }
+
+
+        .summary-info strong {
+            display: block;
+            font-family: 'Outfit', sans-serif;
+            font-size: 25px;
+        }
+
+
+        .summary-info span {
+            color: var(--text-light);
+            font-size: 10px;
+        }
+
+
+        /* ALERT CARD */
+
+        .alerts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+
+        .alert-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+
+        .alert-section-header {
+            padding: 20px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+
+        .alert-title {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+
+        .alert-title-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .alert-title-icon.red {
+            background: var(--red-light);
+        }
+
+
+        .alert-title-icon.orange {
+            background: var(--orange-light);
+        }
+
+
+        .alert-title h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+        }
+
+
+        .alert-title p {
+            color: var(--text-light);
+            font-size: 9px;
+            margin-top: 3px;
+        }
+
+
+        .alert-number {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+
+        .alert-number.red {
+            color: var(--red);
+            background: var(--red-light);
+        }
+
+
+        .alert-number.orange {
+            color: #d97706;
+            background: var(--orange-light);
+        }
+
+
+        /* PRODUCT ALERT ROW */
+
+        .alert-products {
+            padding: 5px 20px;
+        }
+
+
+        .product-alert-row {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px 5px;
+            border-bottom: 1px solid #eef3f0;
+        }
+
+
+        .product-alert-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .alert-product-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #f4f9f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+
+        .alert-product-info {
+            flex: 1;
+        }
+
+
+        .alert-product-info strong {
+            display: block;
+            font-size: 12px;
+        }
+
+
+        .alert-product-info span {
+            display: block;
+            color: var(--text-light);
+            font-size: 9px;
+            margin-top: 3px;
+        }
+
+
+        .expiry-date {
+            text-align: right;
+            margin-right: 20px;
+        }
+
+
+        .expiry-date strong {
+            display: block;
+            font-size: 11px;
+        }
+
+
+        .expiry-date span {
+            display: block;
+            color: var(--text-light);
+            font-size: 9px;
+            margin-top: 3px;
+        }
+
+
+        .alert-action {
+            border: none;
+            border-radius: 9px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+
+        .use-button {
+            color: #087f5b;
+            background: var(--primary-light);
+        }
+
+
+        .remove-button {
+            color: var(--red);
+            background: var(--red-light);
+        }
+
+
+        /* EMPTY STATE */
+
+        .empty-alert {
+            text-align: center;
+            padding: 35px 20px;
+            color: var(--text-light);
+        }
+
+
+        .empty-alert div {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+
+        .empty-alert strong {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+
+        .empty-alert span {
+            font-size: 10px;
+        }
+
+
+        @media (max-width: 750px) {
+
+            .alert-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                align-items: flex-start;
+            }
+
+            .product-alert-row {
+                flex-wrap: wrap;
+            }
+
+            .expiry-date {
+                margin-left: 58px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h2>EcoStock</h2>
+
+                <span>
+                    Smart Inventory
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <p class="menu-title">
+                MAIN MENU
+            </p>
+
+
+            <a href="index.html"
+               class="nav-item">
+
+                <span>📊</span>
+                Dashboard
+
+            </a>
+
+
+            <a href="inventory.html"
+               class="nav-item">
+
+                <span>📦</span>
+                Inventory
+
+            </a>
+
+
+            <a href="add-product.html"
+               class="nav-item">
+
+                <span>➕</span>
+                Add Product
+
+            </a>
+
+
+            <a href="billing.html"
+               class="nav-item">
+
+                <span>🧾</span>
+                Billing
+
+            </a>
+
+
+            <a href="alerts.html"
+               class="nav-item active">
+
+                <span>🔔</span>
+                Expiry Alerts
+
+                <span class="alert-count">
+                    8
+                </span>
+
+            </a>
+
+
+            <a href="analytics.html"
+               class="nav-item">
+
+                <span>📈</span>
+                Analytics
+
+            </a>
+
+
+            <p class="menu-title">
+                SYSTEM
+            </p>
+
+
+            <a href="settings.html"
+               class="nav-item">
+
+                <span>⚙️</span>
+                Settings
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="eco-card">
+
+                <div class="eco-icon">
+                    🌎
+                </div>
+
+                <h4>
+                    Save the Planet
+                </h4>
+
+                <p>
+                    Every product saved from waste
+                    makes a difference.
+                </p>
+
+                <div class="eco-progress">
+                    <div></div>
+                </div>
+
+                <small>
+                    78% waste reduction goal
+                </small>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="mobile-logo">
+                🌿 EcoStock
+            </div>
+
+
+            <div class="search-box">
+
+                <span>🔍</span>
+
+                <input
+                    type="text"
+                    placeholder="Search inventory..."
+                >
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <button class="icon-button">
+
+                    🔔
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="avatar">
+                        M
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Mugesh
+                        </strong>
+
+                        <small>
+                            Administrator
+                        </small>
+
+                    </div>
+
+                    <span>⌄</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- PAGE -->
+
+        <section class="dashboard">
+
+
+            <div class="page-header">
+
+                <div>
+
+                    <p class="greeting">
+                        SMART MONITORING
+                    </p>
+
+                    <h1>
+                        Expiry Alerts 🔔
+                    </h1>
+
+                    <p>
+                        Stay ahead of expiry dates and
+                        prevent unnecessary waste.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SUMMARY -->
+
+            <div class="alert-summary">
+
+
+                <div class="alert-summary-card">
+
+                    <div class="summary-icon red">
+                        🔴
+                    </div>
+
+                    <div class="summary-info">
+
+                        <strong id="expiredCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Expired Products
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="alert-summary-card">
+
+                    <div class="summary-icon orange">
+                        🟠
+                    </div>
+
+                    <div class="summary-info">
+
+                        <strong id="warningCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Expiring Within 7 Days
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="alert-summary-card">
+
+                    <div class="summary-icon green">
+                        🟢
+                    </div>
+
+                    <div class="summary-info">
+
+                        <strong id="safeCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Safe Products
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ALERT SECTIONS -->
+
+            <div class="alerts-container">
+
+
+                <!-- EXPIRED -->
+
+                <div class="alert-section">
+
+
+                    <div class="alert-section-header">
+
+                        <div class="alert-title">
+
+                            <div class="alert-title-icon red">
+                                🔴
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Expired Products
+                                </h2>
+
+                                <p>
+                                    These products have
+                                    passed their expiry date.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="alert-number red"
+                            id="expiredBadge">
+
+                            0 Products
+
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="alert-products"
+                        id="expiredProducts">
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- EXPIRING SOON -->
+
+                <div class="alert-section">
+
+
+                    <div class="alert-section-header">
+
+                        <div class="alert-title">
+
+                            <div class="alert-title-icon orange">
+                                🟠
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Expiring Soon
+                                </h2>
+
+                                <p>
+                                    Products expiring within
+                                    the next 7 days.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="alert-number orange"
+                            id="warningBadge">
+
+                            0 Products
+
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="alert-products"
+                        id="warningProducts">
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <script src="js/app.js"></script>
+
+    <script src="js/alerts.js"></script>
+
+</body>
+
+</html>

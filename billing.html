@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoStock | Billing & POS Terminal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 29px;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .pos-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 900px) {
+            .pos-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">🌿</div>
+            <div>
+                <h2>EcoStock</h2>
+                <span>Smart Inventory</span>
+            </div>
+        </div>
+
+        <nav>
+            <p class="menu-title">MAIN MENU</p>
+            <a href="index.html" class="nav-item">
+                <span>📊</span> Dashboard
+            </a>
+            <a href="inventory.html" class="nav-item">
+                <span>📦</span> Inventory
+            </a>
+            <a href="add-product.html" class="nav-item">
+                <span>➕</span> Add Product
+            </a>
+            <a href="billing.html" class="nav-item active">
+                <span>🧾</span> Billing
+            </a>
+            <a href="alerts.html" class="nav-item">
+                <span>🔔</span> Expiry Alerts
+                <span class="alert-count">8</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <span>📈</span> Analytics
+            </a>
+
+            <p class="menu-title">SYSTEM</p>
+            <a href="settings.html" class="nav-item">
+                <span>⚙️</span> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="eco-card">
+                <div class="eco-icon">🌎</div>
+                <h4>Save the Planet</h4>
+                <p>Every product saved from waste makes a difference.</p>
+                <div class="eco-progress"><div></div></div>
+                <small>78% waste reduction goal</small>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="mobile-logo">🌿 EcoStock</div>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="globalPosSearch" placeholder="Quick search product or customer...">
+            </div>
+            <div class="top-actions">
+                <button class="icon-button">
+                    🔔<span class="notification-dot"></span>
+                </button>
+                <div class="profile">
+                    <div class="avatar">M</div>
+                    <div>
+                        <strong>Mugesh</strong>
+                        <small>Administrator</small>
+                    </div>
+                    <span>⌄</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <section class="dashboard">
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <div>
+                    <p class="greeting">POINT OF SALE & INVOICING</p>
+                    <h1>Billing & POS Terminal 🧾</h1>
+                    <p>Generate customer bills, manage real-time stock deductions, and enforce expiry safety.</p>
+                </div>
+                <button class="primary-button" onclick="resetBillingForm()">
+                    + New Sale
+                </button>
+            </div>
+
+            <!-- POS STATS CARDS -->
+            <div class="pos-stats">
+                <div class="stat-card green">
+                    <div class="stat-top">
+                        <div class="stat-icon">💰</div>
+                        <span class="trend positive">Today</span>
+                    </div>
+                    <h3 id="statTodayRevenue">₹0.00</h3>
+                    <p>Total Revenue</p>
+                    <div class="stat-footer">Gross sales today</div>
+                </div>
+
+                <div class="stat-card mint">
+                    <div class="stat-top">
+                        <div class="stat-icon">📄</div>
+                        <span class="trend positive">Completed</span>
+                    </div>
+                    <h3 id="statInvoicesCount">0</h3>
+                    <p>Invoices Issued</p>
+                    <div class="stat-footer">Bills processed today</div>
+                </div>
+
+                <div class="stat-card orange">
+                    <div class="stat-top">
+                        <div class="stat-icon">🛑</div>
+                        <span class="trend warning">Safety</span>
+                    </div>
+                    <h3 id="statBlockedExpired">0</h3>
+                    <p>Expired Blocked</p>
+                    <div class="stat-footer">Sales prevented</div>
+                </div>
+
+                <div class="stat-card blue">
+                    <div class="stat-top">
+                        <div class="stat-icon">📦</div>
+                        <span class="trend info">Active</span>
+                    </div>
+                    <h3 id="statTotalStock">0</h3>
+                    <p>Available Items</p>
+                    <div class="stat-footer">In stock inventory</div>
+                </div>
+            </div>
+
+            <!-- MAIN POS GRID -->
+            <div class="pos-grid">
+
+                <!-- LEFT COLUMN: PRODUCT SELECTOR & EXPIRY INSPECTOR -->
+                <div class="pos-card">
+                    <div class="pos-card-header">
+                        <h3>📦 Product Selector</h3>
+                        <div class="expiry-toggle-wrapper">
+                            <span>Block Expired Items</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="blockExpiredToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- SELECT PRODUCT -->
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Select Product from Inventory</label>
+                        <select id="posProductSelect" style="font-size: 13px; font-weight: 600; padding: 12px;">
+                            <option value="">-- Choose a product --</option>
+                        </select>
+                    </div>
+
+                    <!-- EXPIRY ALERT BANNER CONTAINER -->
+                    <div id="expiryAlertBanner" class="billing-alert-banner safe" style="display: none;">
+                        <span class="alert-icon" id="expiryAlertIcon">🟢</span>
+                        <div>
+                            <strong id="expiryAlertTitle">Safe Product</strong>
+                            <div id="expiryAlertText" style="font-size: 11px; opacity: 0.9;">Item is well within validity period.</div>
+                        </div>
+                    </div>
+
+                    <!-- SELECTED PRODUCT DETAILS PREVIEW -->
+                    <div class="product-billing-preview" id="selectedProductPreview">
+                        <div class="product-meta">
+                            <div class="product-icon" id="previewItemIcon">📦</div>
+                            <div class="product-details">
+                                <h4 id="previewItemName">No product selected</h4>
+                                <p id="previewItemStock">Select a product to view stock & expiry info</p>
+                            </div>
+                        </div>
+                        <div class="price-tag" id="previewItemPrice">₹0.00</div>
+                    </div>
+
+                    <!-- QUANTITY & ADD TO BILL BUTTON -->
+                    <div style="display: flex; gap: 12px; margin-top: 18px; align-items: flex-end;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Quantity to Bill</label>
+                            <input type="number" id="posQuantity" min="1" value="1" placeholder="Qty">
+                        </div>
+                        <button class="primary-button" id="addToCartBtn" onclick="addItemToCart()" style="padding: 12px 24px; height: 44px; white-space: nowrap;">
+                            🛒 Add to Bill
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: BILL CART & CHECKOUT PANEL -->
+                <div class="pos-card">
+                    <div class="pos-card-header">
+                        <h3>🧾 Customer Bill Cart</h3>
+                        <span id="cartItemCountBadge" style="background: var(--mint); color: var(--primary); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">0 Items</span>
+                    </div>
+
+                    <!-- CUSTOMER DETAILS -->
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input type="text" id="custName" placeholder="Walk-in Customer">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone / Mobile</label>
+                            <input type="text" id="custPhone" placeholder="Mobile No.">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="custPayment">
+                                <option value="Cash">💵 Cash</option>
+                                <option value="UPI">📱 UPI / QR</option>
+                                <option value="Card">💳 Card</option>
+                                <option value="NetBanking">🏦 NetBanking</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- CART TABLE -->
+                    <div class="cart-table-wrapper">
+                        <table class="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Status</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 25px; color: var(--text-light);">
+                                        🛒 Cart is empty. Add products from the left panel.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- SUMMARY BREAKDOWN -->
+                    <div class="checkout-summary">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">₹0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (%): <input type="number" id="taxRateInput" value="5" min="0" max="100" style="width: 50px; padding: 2px 5px; font-size: 11px; border: 1px solid var(--border); border-radius: 4px;" onchange="renderCart()"></span>
+                            <span id="summaryTax">₹0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Discount (₹): <input type="number" id="discountInput" value="0" min="0" style="width: 60px; padding: 2px 5px; font-size: 11px; border: 1px solid var(--border); border-radius: 4px;" onchange="renderCart()"></span>
+                            <span id="summaryDiscount">-₹0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Grand Total</span>
+                            <span class="total-amount" id="summaryGrandTotal">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div style="display: flex; gap: 10px; margin-top: 18px;">
+                        <button class="secondary-button" onclick="clearCart()" style="flex: 1;">
+                            🗑️ Clear Cart
+                        </button>
+                        <button class="primary-button" onclick="generateAndPrintInvoice()" style="flex: 2; height: 46px; font-weight: 700;">
+                            ✨ Generate & Print Invoice
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RECENT SALES HISTORY TABLE -->
+            <div class="dashboard-card" style="margin-top: 25px;">
+                <div class="card-header">
+                    <div>
+                        <h2>Recent Invoices & Bills</h2>
+                        <p>History of finalized transactions</p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Date & Time</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Grand Total</th>
+                                <th>Payment Mode</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="billHistoryTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-light); padding: 20px;">
+                                    No invoices generated yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- INVOICE RECEIPT MODAL -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📄 Tax Invoice Receipt</h3>
+                <button class="modal-close" onclick="closeReceiptModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="receipt-box" id="printableReceipt">
+                    <div class="receipt-brand">
+                        <h2>🌿 EcoStock Store</h2>
+                        <p style="font-size: 11px; color: var(--text-light);">Smart Inventory & Eco-Billing System</p>
+                        <p style="font-size: 10px; color: var(--text-light);">GSTIN: 33AAACE1234F1Z9 | Ph: +91 98765 43210</p>
+                    </div>
+
+                    <div class="receipt-meta">
+                        <div>
+                            <strong>Invoice #: </strong><span id="recInvoiceNo">INV-1001</span><br>
+                            <strong>Date: </strong><span id="recDate">01 Sep 2026</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Customer: </strong><span id="recCustomer">Walk-in</span><br>
+                            <strong>Payment: </strong><span id="recPayment">Cash</span>
+                        </div>
+                    </div>
+
+                    <table class="receipt-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th style="text-align: center;">Qty</th>
+                                <th style="text-align: right;">Price</th>
+                                <th style="text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recTableBody">
+                        </tbody>
+                    </table>
+
+                    <div style="border-top: 1px solid #cbd5e1; padding-top: 10px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Subtotal:</span>
+                            <span id="recSubtotal">₹0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Tax:</span>
+                            <span id="recTax">₹0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Discount:</span>
+                            <span id="recDiscount">-₹0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; border-top: 2px dashed #94a3b8; padding-top: 6px; margin-top: 6px; color: var(--primary);">
+                            <span>GRAND TOTAL:</span>
+                            <span id="recGrandTotal">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px; font-size: 10px; color: var(--text-light);">
+                        <p>🌿 Thank you for shopping with EcoStock!</p>
+                        <p>Preventing food waste for a greener tomorrow.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-button" onclick="closeReceiptModal()">Close</button>
+                <button class="primary-button" onclick="window.print()">🖨️ Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/app.js"></script>
+    <script src="js/billing.js"></script>
+</body>
+</html>

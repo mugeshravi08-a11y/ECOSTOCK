@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoStock | Inventory</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Inventory page specific styling */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 29px;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .inventory-toolbar {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .inventory-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f9f7;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 14px;
+            width: 300px;
+            height: 42px;
+        }
+
+        .inventory-search input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-group select {
+            border: 1px solid var(--border);
+            background: white;
+            padding: 10px 13px;
+            border-radius: 10px;
+            outline: none;
+            font-size: 11px;
+            color: var(--text);
+        }
+
+        .table-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        .inventory-table th {
+            background: #f5f9f7;
+            padding: 15px 18px;
+            text-align: left;
+            font-size: 10px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .inventory-table td {
+            padding: 15px 18px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .product-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background: var(--mint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .product-name strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .product-name span {
+            display: block;
+            font-size: 9px;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        .category-badge {
+            background: #eafaf3;
+            color: var(--primary);
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .quantity {
+            font-weight: 700;
+        }
+
+        .date {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .table-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .table-status.safe {
+            background: #e3faf2;
+            color: #087f5b;
+        }
+
+        .table-status.warning {
+            background: #fff4d6;
+            color: #d97706;
+        }
+
+        .table-status.expired {
+            background: #ffe5e5;
+            color: #c92a2a;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            width: 31px;
+            height: 31px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--mint);
+            transform: translateY(-2px);
+        }
+
+        .inventory-footer {
+            padding: 16px 18px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inventory-footer span {
+            color: var(--text-light);
+            font-size: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 750px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .inventory-toolbar {
+                flex-direction: column;
+            }
+
+            .inventory-search {
+                width: 100%;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-group select {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">🌿</div>
+
+            <div>
+                <h2>EcoStock</h2>
+                <span>Smart Inventory</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <p class="menu-title">MAIN MENU</p>
+
+            <a href="index.html" class="nav-item">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="inventory.html" class="nav-item active">
+                <span>📦</span>
+                Inventory
+            </a>
+
+            <a href="add-product.html" class="nav-item">
+                <span>➕</span>
+                Add Product
+            </a>
+
+            <a href="billing.html" class="nav-item">
+                <span>🧾</span>
+                Billing
+            </a>
+
+            <a href="alerts.html" class="nav-item">
+                <span>🔔</span>
+                Expiry Alerts
+                <span class="alert-count">8</span>
+            </a>
+
+            <a href="analytics.html" class="nav-item">
+                <span>📈</span>
+                Analytics
+            </a>
+
+            <p class="menu-title">SYSTEM</p>
+
+            <a href="settings.html" class="nav-item">
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="eco-card">
+
+                <div class="eco-icon">🌎</div>
+
+                <h4>Save the Planet</h4>
+
+                <p>
+                    Every product saved from waste makes a difference.
+                </p>
+
+                <div class="eco-progress">
+                    <div></div>
+                </div>
+
+                <small>78% waste reduction goal</small>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="mobile-logo">
+                🌿 EcoStock
+            </div>
+
+            <div class="search-box">
+                <span>🔍</span>
+                <input
+                    type="text"
+                    placeholder="Search inventory..."
+                >
+            </div>
+
+            <div class="top-actions">
+
+                <button class="icon-button">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile">
+
+                    <div class="avatar">
+                        M
+                    </div>
+
+                    <div>
+                        <strong>Mugesh</strong>
+                        <small>Administrator</small>
+                    </div>
+
+                    <span>⌄</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE -->
+        <section class="dashboard">
+
+            <!-- HEADER -->
+            <div class="page-header">
+
+                <div>
+                    <p class="greeting">INVENTORY MANAGEMENT</p>
+
+                    <h1>Inventory 📦</h1>
+
+                    <p>
+                        Manage and monitor all your products in one place.
+                    </p>
+                </div>
+
+                <a href="add-product.html" class="primary-button">
+                    + Add Product
+                </a>
+
+            </div>
+
+
+            <!-- TOOLBAR -->
+            <div class="inventory-toolbar">
+
+                <div class="inventory-search">
+
+                    <span>🔍</span>
+
+                    <input
+                        type="text"
+                        id="inventorySearch"
+                        placeholder="Search products..."
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <select id="categoryFilter">
+
+                        <option value="all">
+                            All Categories
+                        </option>
+
+                        <option value="food">
+                            Food & Beverages
+                        </option>
+
+                        <option value="medicine">
+                            Medicine
+                        </option>
+
+                        <option value="personal">
+                            Personal Care
+                        </option>
+
+                        <option value="household">
+                            Household
+                        </option>
+
+                    </select>
+
+
+                    <select id="statusFilter">
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="safe">
+                            Safe
+                        </option>
+
+                        <option value="warning">
+                            Expiring Soon
+                        </option>
+
+                        <option value="expired">
+                            Expired
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table class="inventory-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Product</th>
+
+                                <th>Category</th>
+
+                                <th>Quantity</th>
+
+                                <th>Unit Price</th>
+
+                                <th>Total Value</th>
+
+                                <th>Expiry Date</th>
+
+                                <th>Status</th>
+
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="inventoryTable">
+
+                            <tr data-category="food" data-status="safe">
+
+                                <td>
+
+                                    <div class="product-cell">
+
+                                        <div class="product-image">
+                                            🥛
+                                        </div>
+
+                                        <div class="product-name">
+
+                                            <strong>Milk Pack</strong>
+
+                                            <span>
+                                                Dairy product
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="category-badge">
+                                        Food & Beverages
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="quantity">
+                                        12
+                                    </span>
+                                    packs
+                                </td>
+
+                                <td>
+                                    <span class="date">
+                                        18 Sep 2026
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <span class="table-status safe">
+                                        <span class="status-dot"></span>
+                                        Safe
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button
+                                            class="action-btn"
+                                            title="Edit">
+                                            ✏️
+                                        </button>
+
+                                        <button
+                                            class="action-btn"
+                                            title="Delete">
+                                            🗑️
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-category="food" data-status="warning">
+
+                                <td>
+
+                                    <div class="product-cell">
+
+                                        <div class="product-image">
+                                            🍞
+                                        </div>
+
+                                        <div class="product-name">
+
+                                            <strong>Bread</strong>
+
+                                            <span>
+                                                Bakery
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="category-badge">
+                                        Food & Beverages
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="quantity">
+                                        8
+                                    </span>
+                                    packs
+                                </td>
+
+                                <td>
+                                    <span class="date">
+                                        03 Sep 2026
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <span class="table-status warning">
+                                        <span class="status-dot"></span>
+                                        Expiring Soon
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button class="action-btn">
+                                            ✏️
+                                        </button>
+
+                                        <button class="action-btn">
+                                            🗑️
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-category="medicine" data-status="safe">
+
+                                <td>
+
+                                    <div class="product-cell">
+
+                                        <div class="product-image">
+                                            💊
+                                        </div>
+
+                                        <div class="product-name">
+
+                                            <strong>Vitamin Tablets</strong>
+
+                                            <span>
+                                                Health care
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="category-badge">
+                                        Medicine
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="quantity">
+                                        30
+                                    </span>
+                                    strips
+                                </td>
+
+                                <td>
+                                    <span class="date">
+                                        12 Dec 2026
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <span class="table-status safe">
+                                        <span class="status-dot"></span>
+                                        Safe
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button class="action-btn">
+                                            ✏️
+                                        </button>
+
+                                        <button class="action-btn">
+                                            🗑️
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-category="personal" data-status="warning">
+
+                                <td>
+
+                                    <div class="product-cell">
+
+                                        <div class="product-image">
+                                            🧴
+                                        </div>
+
+                                        <div class="product-name">
+
+                                            <strong>Shampoo</strong>
+
+                                            <span>
+                                                Personal care
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="category-badge">
+                                        Personal Care
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="quantity">
+                                        15
+                                    </span>
+                                    bottles
+                                </td>
+
+                                <td>
+                                    <span class="date">
+                                        15 Sep 2026
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <span class="table-status warning">
+                                        <span class="status-dot"></span>
+                                        Expiring Soon
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button class="action-btn">
+                                            ✏️
+                                        </button>
+
+                                        <button class="action-btn">
+                                            🗑️
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-category="household" data-status="expired">
+
+                                <td>
+
+                                    <div class="product-cell">
+
+                                        <div class="product-image">
+                                            🧽
+                                        </div>
+
+                                        <div class="product-name">
+
+                                            <strong>Cleaning Liquid</strong>
+
+                                            <span>
+                                                Household
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="category-badge">
+                                        Household
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="quantity">
+                                        6
+                                    </span>
+                                    bottles
+                                </td>
+
+                                <td>
+                                    <span class="date">
+                                        28 Aug 2026
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <span class="table-status expired">
+                                        <span class="status-dot"></span>
+                                        Expired
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button class="action-btn">
+                                            ✏️
+                                        </button>
+
+                                        <button class="action-btn">
+                                            🗑️
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- TABLE FOOTER -->
+                <div class="inventory-footer">
+
+                    <span>
+                        Showing 5 of 124 products
+                    </span>
+
+                    <div class="pagination">
+
+                        <button class="page-btn active">
+                            1
+                        </button>
+
+                        <button class="page-btn">
+                            2
+                        </button>
+
+                        <button class="page-btn">
+                            3
+                        </button>
+
+                        <button class="page-btn">
+                            →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/app.js"></script>
+    <script src="js/inventory.js"></script>
+
+</body>
+</html>
